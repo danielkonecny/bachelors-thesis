@@ -1,0 +1,364 @@
+%==============================================================================
+% tento soubor pouzijte jako zaklad
+% this file should be used as a base for the thesis
+% Autoři / Authors: 2008 Michal Bidlo, 2019 Jaroslav Dytrych
+% Kontakt pro dotazy a připomínky: sablona@fit.vutbr.cz
+% Contact for questions and comments: sablona@fit.vutbr.cz
+%==============================================================================
+% kodovani: UTF-8 (zmena prikazem iconv, recode nebo cstocs)
+% encoding: UTF-8 (you can change it by command iconv, recode or cstocs)
+%------------------------------------------------------------------------------
+% zpracování / processing: make, make pdf, make clean
+%==============================================================================
+% Soubory, které je nutné upravit nebo smazat: / Files which have to be edited or deleted:
+%   projekt-20-literatura-bibliography.bib - literatura / bibliography
+%   projekt-01-kapitoly-chapters.tex - obsah práce / the thesis content
+%   projekt-01-kapitoly-chapters-en.tex - obsah práce v angličtině / the thesis content in English
+%   projekt-30-prilohy-appendices.tex - přílohy / appendices
+%   projekt-30-prilohy-appendices-en.tex - přílohy v angličtině / appendices in English
+%==============================================================================
+%\documentclass[]{fitthesis} % bez zadání - pro začátek práce, aby nebyl problém s překladem
+%\documentclass[english]{fitthesis} % without assignment - for the work start to avoid compilation problem
+%\documentclass[zadani]{fitthesis} % odevzdani do wisu a/nebo tisk s barevnými odkazy - odkazy jsou barevné
+\documentclass[english,zadani]{fitthesis} % for submission to the IS FIT and/or print with color links - links are color
+%\documentclass[zadani,print]{fitthesis} % pro černobílý tisk - odkazy jsou černé
+%\documentclass[english,zadani,print]{fitthesis} % for the black and white print - links are black
+%\documentclass[zadani,cprint]{fitthesis} % pro barevný tisk - odkazy jsou černé, znak VUT barevný
+%\documentclass[english,zadani,cprint]{fitthesis} % for the print - links are black, logo is color
+% * Je-li práce psaná v anglickém jazyce, je zapotřebí u třídy použít 
+%   parametr english následovně:
+%   If thesis is written in English, it is necessary to use 
+%   parameter english as follows:
+%      \documentclass[english]{fitthesis}
+% * Je-li práce psaná ve slovenském jazyce, je zapotřebí u třídy použít 
+%   parametr slovak následovně:
+%   If the work is written in the Slovak language, it is necessary 
+%   to use parameter slovak as follows:
+%      \documentclass[slovak]{fitthesis}
+% * Je-li práce psaná v anglickém jazyce se slovenským abstraktem apod., 
+%   je zapotřebí u třídy použít parametry english a enslovak následovně:
+%   If the work is written in English with the Slovak abstract, etc., 
+%   it is necessary to use parameters english and enslovak as follows:
+%      \documentclass[english,enslovak]{fitthesis}
+
+% Základní balíčky jsou dole v souboru šablony fitthesis.cls
+% Basic packages are at the bottom of template file fitthesis.cls
+% zde můžeme vložit vlastní balíčky / you can place own packages here
+
+% Kompilace po částech (rychlejší, ale v náhledu nemusí být vše aktuální)
+% Compilation piecewise (faster, but not all parts in preview will be up-to-date)
+% \usepackage{subfiles}
+
+% Nastavení cesty k obrázkům
+% Setting of a path to the pictures
+%\graphicspath{{obrazky-figures/}{./obrazky-figures/}}
+%\graphicspath{{obrazky-figures/}{../obrazky-figures/}}
+
+%---rm---------------
+\renewcommand{\rmdefault}{lmr}%zavede Latin Modern Roman jako rm / set Latin Modern Roman as rm
+%---sf---------------
+\renewcommand{\sfdefault}{qhv}%zavede TeX Gyre Heros jako sf
+%---tt------------
+\renewcommand{\ttdefault}{lmtt}% zavede Latin Modern tt jako tt
+
+% vypne funkci šablony, která automaticky nahrazuje uvozovky,
+% aby nebyly prováděny nevhodné náhrady v popisech API apod.
+% disables function of the template which replaces quotation marks
+% to avoid unnecessary replacements in the API descriptions etc.
+\csdoublequotesoff
+
+% Color blindtext to lightgray %
+\usepackage{blindtext,letltxmacro,xcolor,xparse}
+\usepackage{lipsum}% for simulating real text
+\LetLtxMacro{\blindtextblindtext}{\blindtext}
+\LetLtxMacro{\blindtextBlindtext}{\Blindtext}
+\RenewDocumentCommand{\blindtext}{O{\value{blindtext}}}{%
+  \begingroup\color{lightgray}\blindtextblindtext[#1]\endgroup
+}
+\RenewDocumentCommand{\Blindtext}{O{\value{blindtext}}O{\value{Blindtext}}}{%
+  \begingroup\color{lightgray}\blindtextBlindtext[#1][#2]\endgroup
+}
+% --------------------------- %
+
+\usepackage{url}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc, chains, positioning, shapes.geometric}
+
+\usepackage{pgfplots}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+% =======================================================================
+% balíček "hyperref" vytváří klikací odkazy v pdf, pokud tedy použijeme pdflatex
+% problém je, že balíček hyperref musí být uveden jako poslední, takže nemůže
+% být v šabloně
+% "hyperref" package create clickable links in pdf if you are using pdflatex.
+% Problem is that this package have to be introduced as the last one so it 
+% can not be placed in the template file.
+\ifWis
+\ifx\pdfoutput\undefined % nejedeme pod pdflatexem / we are not using pdflatex
+\else
+  \usepackage{color}
+  \usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex]{hyperref}
+  \definecolor{hrcolor-ref}{RGB}{223,52,30}
+  \definecolor{hrcolor-cite}{HTML}{2F8F00}
+  \definecolor{hrcolor-urls}{HTML}{092EAB}
+  \hypersetup{
+	linkcolor=hrcolor-ref,
+	citecolor=hrcolor-cite,
+	filecolor=magenta,
+	urlcolor=hrcolor-urls
+  }
+  \def\pdfBorderAttrs{/Border [0 0 0] }  % bez okrajů kolem odkazů / without margins around links
+  \pdfcompresslevel=9
+\fi
+\else % pro tisk budou odkazy, na které se dá klikat, černé / for the print clickable links will be black
+\ifx\pdfoutput\undefined % nejedeme pod pdflatexem / we are not using pdflatex
+\else
+  \usepackage{color}
+  \usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex,urlcolor=black,linkcolor=black,citecolor=black]{hyperref}
+  \definecolor{links}{rgb}{0,0,0}
+  \definecolor{anchors}{rgb}{0,0,0}
+  \def\AnchorColor{anchors}
+  \def\LinkColor{links}
+  \def\pdfBorderAttrs{/Border [0 0 0] } % bez okrajů kolem odkazů / without margins around links
+  \pdfcompresslevel=9
+\fi
+\fi
+% Řešení problému, kdy klikací odkazy na obrázky vedou za obrázek
+% This solves the problems with links which leads after the picture
+\usepackage[all]{hypcap}
+
+% Informace o práci/projektu / Information about the thesis
+%---------------------------------------------------------------------------
+\projectinfo{
+  %Prace / Thesis
+  project={BP},            %typ práce BP/SP/DP/DR  / thesis type (SP = term project)
+  year={2020},             % rok odevzdání / year of submission
+  date=\today,             % datum odevzdání / submission date
+  %Nazev prace / thesis title
+  title.cs={Generování obličejů s pomocí generativních neuronových sítí},  % název práce v češtině či slovenštině (dle zadání) / thesis title in czech language (according to assignment)
+  title.en={Generating Faces With Generative Adversarial Networks}, % název práce v angličtině / thesis title in english
+  %title.length={14.5cm}, % nastavení délky bloku s titulkem pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a thesis title for adjusting a line break (can be defined here or below)
+  %sectitle.length={14.5cm}, % nastavení délky bloku s druhým titulkem pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a second thesis title for adjusting a line break (can be defined here or below)
+  %Autor / Author
+  author.name={Daniel},   % jméno autora / author name
+  author.surname={Konečný},   % příjmení autora / author surname 
+  %author.title.p={Bc.}, % titul před jménem (nepovinné) / title before the name (optional)
+  %author.title.a={Ph.D.}, % titul za jménem (nepovinné) / title after the name (optional)
+  %Ustav / Department
+  department={UPGM}, % doplňte příslušnou zkratku dle ústavu na zadání: UPSY/UIFS/UITS/UPGM / fill in appropriate abbreviation of the department according to assignment: UPSY/UIFS/UITS/UPGM
+  % Školitel / supervisor
+  supervisor.name={Martin},   % jméno školitele / supervisor name 
+  supervisor.surname={Kolář},   % příjmení školitele / supervisor surname
+  %supervisor.title.p={prof. RNDr.},   %titul před jménem (nepovinné) / title before the name (optional)
+  supervisor.title.a={M.Sc.},    %titul za jménem (nepovinné) / title after the name (optional)
+  % Klíčová slova / keywords
+  keywords.cs={strojové učení, hluboké učení, neuronová síť, generativní model, generování, generativní neuronová síť, GAN, obraz, obličej}, % klíčová slova v českém či slovenském jazyce / keywords in czech or slovak language
+  keywords.en={machine learning, deep learning, neural network, generative model, generating, generative adversarial network, GAN, image, face}, % klíčová slova v anglickém jazyce / keywords in english
+  %keywords.en={Here, individual keywords separated by commas will be written in English.},
+  % Abstrakt / Abstract
+  abstract.cs={Cílem této práce je generování barevných obrázků obličejů z náhodně určených vysokodimenzionálních vektorů pomocí generativních neuronových sítí. Dále se zabývá analýzou vstupních vektorů na základě příznaků obličejů z nich vygenerovaných. Je provedena implementace generativní neuronové sítě pro generování obrázků ručně psaných číslic, poté dalších dvou sítí pro generování obrázků obličejů. Vygenerované obrázky zobrazují věrohodně vypadající obličeje, lidské oko je však dokáže odlišit od fotek reálných osob. Analýza jednotlivých dimenzí vektorů je provedena pomocí Studentova t-testu. Dále jsou vstupní vektory promítnuty do podprostorů pomocí lineární diskriminační analýzy a jsou nalezeny rozdělovací hranice mezi třídami příznaků. Analýza generovaných dat dokazuje, že~ovlivněním vstupního vektoru je možné docílit generování obrázku obličeje s požadovanými příznaky s pravděpodobností až 80 \%. Hlavním výsledkem této práce je model generativní neuronové sítě určené pro generování obrázků obličejů. Dalším přínosem je nástroj pro generování obrázků obličejů na základě vybraných příznaků.}, % abstrakt v českém či slovenském jazyce / abstract in czech or slovak language
+  abstract.en={The goal of this thesis is generating color images of faces from randomly chosen high-dimensional vectors with Generative Adversarial Networks. The next task is to analyze input vectors based on the features of faces generated from those vectors. Three different models of Generative Adversarial Network are implemented, one for generating images of~handwritten digits and other two for generating images of faces. Generated images show credible-looking faces, but recognizable from real ones with a human eye. Single dimensions of input vectors are analyzed with Student's t-test. Linear Discriminant Analysis is then used to project input vectors into subspaces where the classes of features are separable. Analysis of generated data proves that the input vector can be specifically chosen to generate an image of a face with requested features with probability up to 80 \%. The main result of~this thesis is a model of Generative Adversarial Network for generating images of faces. A tool for generating images of faces with chosen features is implemented too.}, % abstrakt v anglickém jazyce / abstract in english
+  %abstract.en={An abstract of the work in English will be written in this paragraph.},
+  % Prohlášení (u anglicky psané práce anglicky, u slovensky psané práce slovensky) / Declaration (for thesis in english should be in english)
+  % declaration={Prohlašuji, že jsem tuto bakalářskou práci vypracoval samostatně pod vedením pana  Martina Koláře, M.Sc. Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých jsem čerpal.},
+  declaration={I hereby declare that this Bachelor's thesis was prepared as an original work by the author under the supervision of  Martin Kolář, M.Sc. I have listed all the literary sources, publications and other sources, which were used during the preparation of this thesis.},
+  % Poděkování (nepovinné, nejlépe v jazyce práce) / Acknowledgement (optional, ideally in the language of the thesis)
+  %acknowledgment={V této sekci je možno uvést poděkování vedoucímu práce a těm, kteří poskytli odbornou pomoc (externí zadavatel, konzultant apod.).},
+  acknowledgment={I would like to express my sincere gratitude to my supervisor Martin Kolář, M.Sc. for his valuable advice, professional guidance, and important feedback. I would also like to thank Mgr. Lada Konečná for helpful consultations of mathematical topics.},
+  % Rozšířený abstrakt (cca 3 normostrany) - lze definovat zde nebo níže / Extended abstract (approximately 3 standard pages) - can be defined here or below
+  %extendedabstract={Do tohoto odstavce bude zapsán rozšířený výtah (abstrakt) práce v českém (slovenském) jazyce.},
+  %faculty={FIT}, % FIT/FEKT/FSI/FA/FCH/FP/FAST/FAVU/USI/DEF
+  faculty.cs={Fakulta informačních technologií}, % Fakulta v češtině - pro využití této položky výše zvolte fakultu DEF / Faculty in Czech - for use of this entry select DEF above
+  faculty.en={Faculty of Information Technology}, % Fakulta v angličtině - pro využití této položky výše zvolte fakultu DEF / Faculty in English - for use of this entry select DEF above
+  department.cs={Ústav matematiky}, % Ústav v češtině - pro využití této položky výše zvolte ústav DEF nebo jej zakomentujte / Department in Czech - for use of this entry select DEF above or comment it out
+  department.en={Institute of Mathematics} % Ústav v angličtině - pro využití této položky výše zvolte ústav DEF nebo jej zakomentujte / Department in English - for use of this entry select DEF above or comment it out
+}
+
+% Rozšířený abstrakt (cca 3 normostrany) - lze definovat zde nebo výše / Extended abstract (approximately 3 standard pages) - can be defined here or above
+\extendedabstract{
+Práce se zabývá generováním obrázků obličejů s pomocí generativních neuronových sítí a~následnou analýzou latentního prostoru na základě vlastností vygenerovaných dat. Generativní neuronové sítě jsou představeny z teoretického hlediska s hlavními principy, na~kterých jsou založeny. Dále je popsána implementace modelu takové sítě pro generování obrazových dat. Nakonec je provedena analýza výsledků na základě latentního rozložení.
+
+Základem generativní neuronové sítě jsou dva mezi sebou soupeřící modely. První z~nich se nazývá generátor a jeho hlavní role spočívá v generování nových vzorků ze vstupu, kterým může být například náhodný šum. Druhým modelem je diskriminátor, který má za úkol rozpoznat reálný vzorek od generovaného. Vstupem tohoto modelu jsou jak reálné vzorky z trénovací sady, tak i generované vzorky z generátoru. Tyto modely se během trénování navzájem zlepšují a po dokončení tréninku může být samotný generátor využit k~vytváření nových vzorků.
+
+Generativní modely v této práci se zaměřují na vytváření obrazových dat. Diskriminátor i generátor jsou tvořeny konvolučními neuronovými sítěmi, které jsou pro zpracování obrazu vhodné. Diskriminátor využívá konvoluci pro získání informací o obrazu a generátor se učí vytvářet obrázky postupným zvyšováním rozlišení pomocí transponované konvoluce. Pro trénink je použita trénovací sada s obrázky ručně psaných číslic a dvě trénovací sady s~fotkami obličejů.
+
+Pro implementaci byl zvolen programovací jazyk \texttt{Python~3} s knihovnou \texttt{TensorFlow~2} určenou k navrhování neuronových sítí. Generativní neuronové sítě pro různá obrazová data mají mnoho společných rysů. Vstupem generátoru je v této práci vždy náhodný bod ležící na vysokodimenzionální hyperkouli o poloměru jedna. Diskriminátor tvoří vždy neuronová síť s několika vrstvami s dvoudimenzionální konvolucí. U generátoru jsou používány vrstvy s transponovanou konvolucí. Pro lepší generalizaci modelu se využívá tzv. drop out. Obě sítě jsou spojeny do jednoho modelu pro jednodušší trénink generátoru.
+
+Jako první je implementovaná jednoduchá generativní neuronová síť pro vytváření černobílých obrázků ručně psaných číslic, která dosahuje ve většině případů velmi dobrých výsledků nerozeznatelných od trénovací sady. Dále je tato síť přepracovaná, aby vytvářela barevné obrázky obličejů. Při pozorném pohledu jsou vygenerované obrázky rozpoznatelné od reálných obličejů. Hlavní síť implementovaná v této práci se zabývá generováním barevných obrázků obličejů o rozlišení $128 \times 128$ pixelů. Trénovací sada obsahuje obličeje s velkými rozdíly ve věku i vzhledu, které se promítnou i do výsledků generování. Jedná se tedy o mnohem náročnější úkol pro generativní neuronovou síť. Výsledné vygenerované obličeje mají základní rysy a dosahují vyšší kvality než u předchozích implementovaných modelů, mají však nedostatky ve vlasech a okolí obličeje.
+
+Proces generování obrázku z náhodného šumu je deterministický, jakýkoliv náhodný šum má k sobě tedy svým způsobem přiřazený nějaký obrázek. Z této informace vzniká otázka, jestli má určitá vlastnost vstupního vektoru vliv na nějaký příznak vygenerovaného obrázku. Jedná se tedy o zkoumání výsledků na základě latentního rozložení vstupů. Pro analýzu je využita síť pro generování obrázků obličejů z 256dimenzionálních vektorů. Prvním z~testovaných příznaků je přítomnost brýlí na obličeji. Tento příznak je vybrán, protože nabývá pouze dvou hodnot a je velmi jednoduše pozorovatelný na obličeji člověka. Jako druhý příznak je vybrána barva vlasů, kterou je možné také poměrně jednoduše odlišit a~nabývá naopak více než dvou hodnot.
+
+\newpage
+
+Základem pro provedení analýzy je získání datové sady, jejíž součástí jsou vstupní vektory s označením, jaké příznaky má obličej z nich vygenerovaný. Kvůli tomu, že generátor ne~vždy produkuje rozpoznatelné obličeje, byla tato datová sada vytvořena ručně. Datové sady pro oba zmíněné příznaky obsahují 500 vzorků. Nejprve je provedena analýza jednotlivých dimenzí pomocí Studentova t-testu na sadě vstupních vektorů označených příznakem o přítomnosti brýlí. Výsledkem testu je označení několika dimenzí jako potenciálně možných pro~oddělení tříd příznaků. Při detailním pohledu na histogramy rozložení hodnot v různých dimenzích je však jasné, že není možné využít jakoukoliv jednotlivou dimenzi pro oddělení tříd.
+
+Dalším možným způsobem jak třídy příznaků oddělit je pomocí projekce dat do podprostoru, kde jsou třídy lépe lineárně separovatelné. K tomu se využívá lineární diskriminační analýza. Nejprve je provedena na vstupních vektorech s příznakem o přítomnosti brýlí. Data jsou promítnuta do prostoru o jedné dimenzi a při znázornění těchto dat je viditelné, že jsou velmi dobře oddělitelná. Dále je tento postup aplikován i pro vstupní vektory označené příznakem o barvě vlasů. Jsou využity čtyři možné třídy a výsledný podprostor má tedy 3 dimenze. I na těchto datech je viditelné, že jsou třídy lineárně separovatelné.
+
+Možnost takto oddělit třídy je využita v modelu pro rozpoznávání příznaků na základě vstupního vektoru. Tento rozpoznávací model je pak využit v nástroji pro generování obličejů s příznaky, které si uživatel sám vybere. Úspěšnost vytvoření požadovaného obličeje dosahuje až 80~\%. Nástroj prvně vygeneruje mnoho vstupních vektorů a poté je testuje, jestli vyhovují požadavkům, které si uživatel zvolil. Po nalezení vyhovujícího vstupního vektoru je z něj vygenerován obrázek obličeje s požadovanými příznaky.}
+
+% nastavení délky bloku s titulkem pro úpravu zalomení řádku - lze definovat zde nebo výše / setting the length of a block with a thesis title for adjusting a line break - can be defined here or above
+\titlelength{12cm}
+% nastavení délky bloku s druhým titulkem pro úpravu zalomení řádku - lze definovat zde nebo výše / setting the length of a block with a second thesis title for adjusting a line break - can be defined here or above
+%\sectitlelength{14.5cm}
+
+% řeší první/poslední řádek odstavce na předchozí/následující stránce
+% solves first/last row of the paragraph on the previous/next page
+\clubpenalty=10000
+\widowpenalty=10000
+
+% checklist
+\newlist{checklist}{itemize}{1}
+\setlist[checklist]{label=$\square$}
+
+\begin{document}
+  % Vysazeni titulnich stran / Typesetting of the title pages
+  % ----------------------------------------------
+  \maketitle
+  % Obsah
+  % ----------------------------------------------
+  \setlength{\parskip}{0pt}
+
+  \setcounter{tocdepth}{1}
+  {\hypersetup{hidelinks}\tableofcontents}
+  
+  % Seznam obrazku a tabulek (pokud prace obsahuje velke mnozstvi obrazku, tak se to hodi)
+  % List of figures and list of tables (if the thesis contains a lot of pictures, it is good)
+  \ifczech
+    \renewcommand\listfigurename{Seznam obrázků}
+  \fi
+  \ifslovak
+    \renewcommand\listfigurename{Zoznam obrázkov}
+  \fi
+  % {\hypersetup{hidelinks}\listoffigures}
+  
+  \ifczech
+    \renewcommand\listtablename{Seznam tabulek}
+  \fi
+  \ifslovak
+    \renewcommand\listtablename{Zoznam tabuliek}
+  \fi
+  % {\hypersetup{hidelinks}\listoftables}
+
+  \ifODSAZ
+    \setlength{\parskip}{0.5\bigskipamount}
+  \else
+    \setlength{\parskip}{0pt}
+  \fi
+
+  % vynechani stranky v oboustrannem rezimu
+  % Skip the page in the two-sided mode
+  \iftwoside
+    \cleardoublepage
+  \fi
+
+  % Text prace / Thesis text
+  % ----------------------------------------------
+  \ifenglish
+    \input{thesis}
+  \else
+    \input{thesis}
+  \fi
+  
+  % Kompilace po částech (viz výše, nutno odkomentovat)
+  % Compilation piecewise (see above, it is necessary to uncomment it)
+  %\subfile{projekt-01-uvod-introduction}
+  % ...
+  %\subfile{chapters/projekt-05-conclusion}
+
+
+  % Pouzita literatura / Bibliography
+  % ----------------------------------------------
+\ifslovak
+  \makeatletter
+  \def\@openbib@code{\addcontentsline{toc}{chapter}{Literatúra}}
+  \makeatother
+  \bibliographystyle{bib-styles/Pysny/skplain}
+\else
+  \ifczech
+    \makeatletter
+    \def\@openbib@code{\addcontentsline{toc}{chapter}{Literatura}}
+    \makeatother
+    \bibliographystyle{bib-styles/Pysny/czplain}
+  \else 
+    \makeatletter
+    \def\@openbib@code{\addcontentsline{toc}{chapter}{Bibliography}}
+    \makeatother
+    \bibliographystyle{bib-styles/Pysny/enplain}
+  %  \bibliographystyle{alpha}
+  \fi
+\fi
+  \begin{flushleft}
+  \bibliography{bibliography}
+  \end{flushleft}
+
+  % vynechani stranky v oboustrannem rezimu
+  % Skip the page in the two-sided mode
+  \iftwoside
+    \cleardoublepage
+  \fi
+
+  % Prilohy / Appendices
+  % ---------------------------------------------
+  \appendix
+\ifczech
+  \renewcommand{\appendixpagename}{Přílohy}
+  \renewcommand{\appendixtocname}{Přílohy}
+  \renewcommand{\appendixname}{Příloha}
+\fi
+\ifslovak
+  \renewcommand{\appendixpagename}{Prílohy}
+  \renewcommand{\appendixtocname}{Prílohy}
+  \renewcommand{\appendixname}{Príloha}
+\fi
+%  \appendixpage
+
+% vynechani stranky v oboustrannem rezimu
+% Skip the page in the two-sided mode
+%\iftwoside
+%  \cleardoublepage
+%\fi
+  
+\ifslovak
+%  \section*{Zoznam príloh}
+%  \addcontentsline{toc}{section}{Zoznam príloh}
+\else
+  \ifczech
+%    \section*{Seznam příloh}
+%    \addcontentsline{toc}{section}{Seznam příloh}
+  \else
+%    \section*{List of Appendices}
+%    \addcontentsline{toc}{section}{List of Appendices}
+  \fi
+\fi
+  \startcontents[chapters]
+  \setlength{\parskip}{0pt} 
+  % seznam příloh / list of appendices
+  % \printcontents[chapters]{l}{0}{\setcounter{tocdepth}{2}}
+  
+  \ifODSAZ
+    \setlength{\parskip}{0.5\bigskipamount}
+  \else
+    \setlength{\parskip}{0pt}
+  \fi
+  
+  % vynechani stranky v oboustrannem rezimu
+  \iftwoside
+    \cleardoublepage
+  \fi
+  
+  % Přílohy / Appendices
+  \ifenglish
+    \input{appendices}
+  \else
+    \input{appendices}
+  \fi
+  
+  % Kompilace po částech (viz výše, nutno odkomentovat)
+  % Compilation piecewise (see above, it is necessary to uncomment it)
+  %\subfile{projekt-30-prilohy-appendices}
+  
+\end{document}
